@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	rest "github.com/erocheleau/uabot-rest/rest-endpoint"
 )
 
 func main() {
@@ -12,6 +14,6 @@ func main() {
 
 	LoggerInfo.Println("Server started and listening on localhost:1337/v1/")
 
-	router := NewRouter()
+	router := rest.NewRouter()
 	log.Fatal(http.ListenAndServe(":1337", router))
 }

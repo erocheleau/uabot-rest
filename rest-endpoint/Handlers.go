@@ -1,4 +1,4 @@
-package main
+package rest-endpoint
 
 import (
 	"encoding/json"
