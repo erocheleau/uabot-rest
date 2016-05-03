@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	rest "github.com/erocheleau/uabot-rest/rest-endpoint"
+	rest "github.com/erocheleau/uabot-rest/restendpoint"
 )
 
 func main() {
