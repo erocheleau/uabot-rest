@@ -1,4 +1,4 @@
-package rest-endpoint
+package restendpoint
 
 import "net/http"
 

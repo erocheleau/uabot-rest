@@ -1,4 +1,4 @@
-package main
+package restendpoint
 
 type Org struct {
 	Id                int    `json:"id"`
