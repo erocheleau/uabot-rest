@@ -1,7 +1,6 @@
 package couchclient
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,9 +9,10 @@ import (
 )
 
 type Client interface {
+	GetUuid() (string, error)
 }
 
-type Config struct {
+type CouchConfig struct {
 	url  string
 	port int
 }
@@ -23,7 +23,7 @@ type client struct {
 	port       int
 }
 
-func NewClient(c Config) Client {
+func NewClient(c CouchConfig) Client {
 	return &client{
 		url:        c.url,
 		port:       c.port,
@@ -35,8 +35,7 @@ type uuidResponse struct {
 	Uuids []string `json:"uuids"`
 }
 
-func (c *client) GetUUid() (string, error) {
-	var buf bytes.Buffer
+func (c *client) GetUuid() (string, error) {
 	var uuids uuidResponse
 
 	resp, err := http.Get(c.url + ":" + strconv.Itoa(c.port) + "/_uuids")

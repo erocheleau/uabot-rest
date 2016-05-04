@@ -1,47 +1,47 @@
 package restendpoint
 
-import "fmt"
+import (
+	"github.com/k0kubun/pp"
+	"github.com/patrickjuchli/couch"
+)
 
-var currentId int
+var srv *couch.Server
+var db *couch.Database
 
-var orgs Orgs
+func RepoInit() {
+	cred := couch.NewCredentials("", "")
+	srv = couch.NewServer("http://127.0.0.1:5984", cred)
+	db = srv.Database("orgs")
+	vr, err := RepoListAllOrgs()
+	if err != nil {
+		for _, row := range vr.Rows {
+			pp.Println(row.Value)
+		}
+	}
+}
 
-func init() {
-	RepoCreateOrg(Org{Name: "NTO"})
-	RepoCreateOrg(Org{Name: "Besttech"})
+func RepoListAllOrgs() (*couch.ViewResult, error) {
+	if srv != nil && db != nil {
+		if db.HasView("org", "AllOrgs") {
+			return db.Query("org", "AllOrgs", nil)
+		}
+	}
+	return nil, nil
 }
 
 func RepoFindOrgByName(name string) Org {
-	for _, o := range orgs {
-		if o.Name == name {
-			return o
-		}
-	}
 	return Org{}
 }
 
 func RepoFindOrgById(id int) Org {
-	for _, o := range orgs {
-		if o.Id == id {
-			return o
-		}
-	}
 	return Org{}
 }
 
 func RepoCreateOrg(o Org) Org {
-	currentId += 1
-	o.Id = currentId
-	orgs = append(orgs, o)
-	return o
+	return Org{}
 }
 
 func RepoDestroyOrg(id int) error {
-	for i, o := range orgs {
-		if o.Id == id {
-			orgs = append(orgs[:i], orgs[i+1:]...)
-			return nil
-		}
-	}
-	return fmt.Errorf("Could not find the Org with id of %d to delete", id)
+	return nil
+	//return fmt.Errorf("Could not find the Org with id of %d to delete", id)
 }
