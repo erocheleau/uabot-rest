@@ -1,6 +1,6 @@
 package couchclient
 
-import (
+/*import (
 	"time"
 
 	"github.com/erocheleau/uabot-rest/model"
@@ -37,7 +37,7 @@ func getConnection() *couchdb.Connection {
 /*func GetOrgsList() (ViewResponse, error) {
 	conn := getConnection()
 	db := conn.SelectDB("orgstest", nil)
-}*/
+}
 
 func GetDBList() []string {
 	conn := getConnection()
@@ -48,4 +48,4 @@ func GetDBList() []string {
 	}
 
 	return dbList
-}
+}*/
