@@ -1,55 +1,61 @@
 package restendpoint
 
 import (
-	"fmt"
-	"html"
+	"encoding/json"
 	"net/http"
 
 	"github.com/erocheleau/uabot-rest/couchclient"
+	"github.com/gorilla/mux"
 )
 
-type ViewResult struct {
-	ID  string      `json:"id"`
-	Key interface{} `json:"key"`
-}
-
-type ViewResponse struct {
-	TotalRows int          `json:"total_rows"`
-	Offset    int          `json:"offset"`
-	Rows      []ViewResult `json:"rows,omitempty"`
-}
+var _couchclient couchclient.CouchClient
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	couchconfig := couchclient.CouchConfig{url: "127.0.0.1", port: 5984}
-	client := couchclient.NewClient(config)
-
-	uuid, err := client.GetUUid()
+	config := couchclient.CouchConfig{Server: "http://localhost:5984"}
+	c := couchclient.NewCouchClient(config)
+	res, err := c.GetAllDocs("orgstest")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Fprintf(w, "Uuid %q\n", html.EscapeString(uuid))
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		panic(err)
+	}
 }
 
 func OrgsIndex(w http.ResponseWriter, r *http.Request) {
-	dblist := couchclient.GetDBList()
-	if len(dblist) > 0 {
-		for i, dbName := range dblist {
-			//pp.Fprintf(w, "Database %v: %v\n", i, dbName)
-			fmt.Fprintf(w, "Database %d: %q\n", i, html.EscapeString(dbName))
-		}
-	}
-	//w.Header().Set("Content-Type", "application/json;charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
+	c := getCouchClient()
 
+	res, err := c.GetView("orgstest", "org", "AllOrgs")
+	if err != nil {
+		panic(err)
+	}
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		panic(err)
+	}
 }
 
 func OrgShow(w http.ResponseWriter, r *http.Request) {
-	/*vars := mux.Vars(r)
+
+	vars := mux.Vars(r)
 	orgName := vars["orgName"]
-	org := RepoFindOrgByName(orgName)
-	if err := json.NewEncoder(w).Encode(org); err != nil {
+
+	var filter = "key=\"" + orgName + "\""
+	c := getCouchClient()
+	res, err := c.GetView("orgstest", "org", "AllOrgs", filter)
+	if err != nil {
 		panic(err)
-	}*/
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		panic(err)
+	}
 }
 
 func OrgCreate(w http.ResponseWriter, r *http.Request) {
@@ -79,4 +85,13 @@ func OrgCreate(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(o); err != nil {
 		panic(err)
 	}*/
+}
+
+func getCouchClient() couchclient.CouchClient {
+	if _couchclient == nil {
+		config := couchclient.CouchConfig{Server: "http://localhost:5984"}
+		c := couchclient.NewCouchClient(config)
+		return c
+	}
+	return _couchclient
 }

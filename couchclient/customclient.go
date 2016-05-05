@@ -11,7 +11,10 @@ type CouchConfig struct {
 	Server string
 }
 
-type CouchClient interface{}
+type CouchClient interface {
+	GetAllDocs(database string) (results ViewResponse, err error)
+	GetView(database string, designdoc string, view string, params ...string) (results ViewResponse, err error)
+}
 
 type couchClient struct {
 	httpClient *http.Client

@@ -1,6 +1,7 @@
 package restendpoint
 
 import (
+	"github.com/erocheleau/uabot-rest/model"
 	"github.com/k0kubun/pp"
 	"github.com/patrickjuchli/couch"
 )
@@ -21,24 +22,19 @@ func RepoInit() {
 }
 
 func RepoListAllOrgs() (*couch.ViewResult, error) {
-	if srv != nil && db != nil {
-		if db.HasView("org", "AllOrgs") {
-			return db.Query("org", "AllOrgs", nil)
-		}
-	}
 	return nil, nil
 }
 
-func RepoFindOrgByName(name string) Org {
-	return Org{}
+func RepoFindOrgByName(name string) model.Org {
+	return model.Org{}
 }
 
-func RepoFindOrgById(id int) Org {
-	return Org{}
+func RepoFindOrgById(id int) model.Org {
+	return model.Org{}
 }
 
-func RepoCreateOrg(o Org) Org {
-	return Org{}
+func RepoCreateOrg(o model.Org) model.Org {
+	return model.Org{}
 }
 
 func RepoDestroyOrg(id int) error {
